@@ -1,0 +1,22 @@
+Checks: '
+        abseil-*,
+        boost-*,
+        bugprone-*,
+        cert-*,
+        clang-analyzer-*,
+        concurrency-*,
+        cppcoreguidelines-*,
+        google-*,
+        llvm-*,
+        misc-*,
+        modernize-*,-modernize-use-trailing-return-type,
+        performance-*,
+        portability-*,
+        readability-*
+'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(^gtest)/.*'
+AnalyzeTemporaryDtors: false
+FormatStyle: file
+...
+
