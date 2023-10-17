@@ -1,14 +1,25 @@
 cmake_minimum_required(VERSION 3.26)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+    message(FATAL_ERROR "Do not build in-source. Please remove CMakeCache.txt and the CMakeFiles/ directory. Then build out-of-source.")
+endif()
+
 project(CppService LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(CTest)
+include(CMakeDependentOption)
+include(GNUInstallDirs)
+include(InstallRequiredSystemLibraries)
+include(CMakePackageConfigHelpers)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
 
-find_package(spdlog REQUIRED)
-
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(${PROJECT_NAME}_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    CACHE STRING "Path to install ${PROJECT_NAME} Config*.cmake files to.")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -27,6 +38,8 @@ endif()
 
 message(STATUS "CXX flags: ${CMAKE_CXX_FLAGS}")
 
+find_package(spdlog REQUIRED)
+
 add_subdirectory(src)
 
 if(BUILD_EXAMPLES)
@@ -34,7 +47,5 @@ if(BUILD_EXAMPLES)
 endif(BUILD_EXAMPLES)
 
 if(BUILD_TESTS)
-    include(CTest)
-    enable_testing()
     add_subdirectory(tests)
 endif(BUILD_TESTS)

@@ -45,7 +45,7 @@ install(TARGETS ${PROJECT_NAME}
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(DIRECTORY include/dadabase
+install(DIRECTORY include/cppservice
         DESTINATION include
         COMPONENT Devel
 )
