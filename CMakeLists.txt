@@ -13,6 +13,7 @@ include(CMakePackageConfigHelpers)
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTING "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_PACKAGE "Build package for FetchContent" OFF)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)

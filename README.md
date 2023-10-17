@@ -19,3 +19,17 @@ $ cmake --build build
 $ cd build; ctest; cd ..
 $ cmake --install build
 ```
+
+### Create package for use with FetchContent
+```bash
+$ cmake --build build --target CppServicePackage
+[1/1] Generating CppService-src.zip
+
+# Then in consuming project
+include(FetchContent)
+...
+FetchContent_Declare(CppService URL https://some-path/CppService-src.zip)
+FetchContent_MakeAvailable(CppService)
+...
+target_link_libraries(${PROJECT_NAME} PRIVATE CppService::CppService)
+```

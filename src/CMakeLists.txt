@@ -55,3 +55,12 @@ install(DIRECTORY include/cppservice
         COMPONENT Devel
 )
 
+if (BUILD_PACKAGE)
+    set(package_files ./ ./include)
+    message(STATUS "package_files ${package_files}")
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
+        COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip --format=zip -- ${package_files}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${package_files})
+    add_custom_target(${PROJECT_NAME}Package DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip)
+endif(BUILD_PACKAGE)
