@@ -19,6 +19,11 @@ file(WRITE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.hpp.in "
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${TARGET_SPECIFIC_DEBUG_OPTIONS}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${TARGET_SPECIFIC_RELEASE_OPTIONS}>")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

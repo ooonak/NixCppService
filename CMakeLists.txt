@@ -1,42 +1,42 @@
 cmake_minimum_required(VERSION 3.26)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-    message(FATAL_ERROR "Do not build in-source. Please remove CMakeCache.txt and the CMakeFiles/ directory. Then build out-of-source.")
+    message(FATAL_ERROR "Do not build in-source!")
 endif()
 
 project(CppService LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 include(CTest)
-include(CMakeDependentOption)
 include(GNUInstallDirs)
-include(InstallRequiredSystemLibraries)
 include(CMakePackageConfigHelpers)
 
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+option(BUILD_TESTING "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
-
-set(${PROJECT_NAME}_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
-    CACHE STRING "Path to install ${PROJECT_NAME} Config*.cmake files to.")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS OFF)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnull-dereference")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow -Wunused -Wnon-virtual-dtor -Woverloaded-virtual")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast -Wcast-qual -Wcast-align -Wsign-conversion")
+set(TARGET_SPECIFIC_OPTIONS -Werror)
+set(TARGET_SPECIFIC_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -Wall -Wextra -Wpedantic)
+set(TARGET_SPECIFIC_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -Wnull-dereference -Wshadow -Wunused -Wnon-virtual-dtor -Woverloaded-virtual)
+set(TARGET_SPECIFIC_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -Wold-style-cast -Wcast-qual -Wcast-align -Wsign-conversion)
+#if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+#    set(TARGET_SPECIFIC_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -stdlib=libc++)
+#endif()
+set(TARGET_SPECIFIC_DEBUG_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -g -O1)
+set(TARGET_SPECIFIC_RELEASE_OPTIONS ${TARGET_SPECIFIC_OPTIONS} -O3)
 
-if (DEFINED ${CMAKE_BUILD_TYPE} AND ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O1")
+if (DEFINED CMAKE_BUILD_TYPE)
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+        message(STATUS "TARGET_SPECIFIC_RELEASE_OPTIONS: ${TARGET_SPECIFIC_RELEASE_OPTIONS}")
+    elseif(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        message(STATUS "TARGET_SPECIFIC_DEBUG_OPTIONS: ${TARGET_SPECIFIC_DEBUG_OPTIONS}")
+    else()
+        message(STATUS "No specific options set, neither Debug or Release build (${CMAKE_BUILD_TYPE})?")
+    endif()
 endif()
-
-message(STATUS "CXX flags: ${CMAKE_CXX_FLAGS}")
 
 find_package(spdlog REQUIRED)
 
@@ -46,6 +46,6 @@ if(BUILD_EXAMPLES)
     add_subdirectory(example)
 endif(BUILD_EXAMPLES)
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     add_subdirectory(tests)
-endif(BUILD_TESTS)
+endif(BUILD_TESTING)
